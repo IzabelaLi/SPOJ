@@ -1,0 +1,40 @@
+/****************************************************************************************************************
+Your program is to use the brute-force approach in order to find the Answer to Life, the Universe, and Everything.
+More precisely... rewrite small numbers from input to output. Stop processing input after reading in the number 42.
+All numbers at input are integers of one or two digits. 
+******************************************************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int liczba;
+    int tab[1000];
+    int i=0;
+    int suma=0;
+    int *wsk=&suma;
+    
+    while(true)
+    {
+        cin>>liczba;
+        if (liczba!=42)
+        
+        {
+            tab[i]=liczba;
+            i++;
+            *wsk=i;
+        }  
+        
+        else
+        {
+            for(int j=0; j<*wsk; j++)
+            {
+                cout<<tab[j]<<" ";
+                
+            }   
+            return 0;
+        }    
+    }   
+}    
