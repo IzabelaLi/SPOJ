@@ -1,0 +1,156 @@
+/******************************************************************************
+Farmer John has built a new long barn, with N (2 <= N <= 100,000) stalls. The stalls are located along a straight line at positions x1,...,xN (0 <= xi <= 1,000,000,000).
+
+His C (2 <= C <= N) cows don't like this barn layout and become aggressive towards each other once put into a stall. To prevent the cows from hurting each other, FJ wants to assign the cows to the stalls, such that the minimum distance between any two of them is as large as possible. What is the largest minimum distance?
+Input
+t – the number of test cases, then t test cases follows.
+* Line 1: Two space-separated integers: N and C
+* Lines 2..N+1: Line i+1 contains an integer stall location, xi
+Output
+For each test case output one integer: the largest minimum distance.
+Example
+Input:
+
+1
+5 3
+1
+2
+8
+4
+9
+Output:
+
+3
+Output details:
+
+FJ can put his 3 cows in the stalls at positions 1, 4 and 8,
+resulting in a minimum distance of 3.
+
+*******************************************************************************/
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+void Partycjonuj(int tablica[], int a, int b)
+{
+    while (b>a)
+    {
+        while (!(tablica[b]< tablica[a]))
+        {
+            if (a>=b)
+            {
+                break;
+            }
+            b--;
+        }
+        int bufor=tablica[b];
+        tablica[b]=tablica[a];
+        tablica[a]=bufor;
+        
+        while (!(tablica[a]>=tablica[b]))
+        {
+            if (a>=b)
+            {
+                break;
+            }
+            a++;
+        }
+        int bufor2=tablica[a];
+        tablica[a]=tablica[b];
+        tablica[b]=bufor2;
+    }
+}
+
+int Znajdz_Os(int tablica[], int pierwsza, int poczatek, int koniec)
+{
+    for (int i=poczatek ; i<koniec ; i++)
+    {
+        if (tablica[i]==pierwsza)
+        return i;
+    }
+}
+
+void Quick_Sort(int tablica[], int lewa, int prawa)
+{
+    int os;
+    int a=lewa;
+    int b=prawa;
+    int pierwsza=tablica[a];
+    
+    if (b>a)
+    {
+        Partycjonuj(tablica, a, b);
+        os=Znajdz_Os(tablica, pierwsza, a, b); 
+        Quick_Sort(tablica, a, os); 
+        Quick_Sort(tablica, os+1, b); 
+    }
+}
+
+int main()
+{
+    int t; cin>>t;
+    int LMDistance[t];
+    for (int i = 0; i<t; i++)
+    {
+        int N,C;
+        cin>>N>>C;
+        int Stalls[1000000];
+        int lewa = 0;
+        int prawa = N-1;
+        for (int i=0; i<N; i++) cin>>Stalls[i];
+        Quick_Sort(Stalls, lewa, prawa);
+        
+        int Ximin = Stalls[0];
+        int Ximax = Stalls[N-1];
+        int Xs=Ximax-Ximin+1;
+        int LMD=(Xs-1)/(C-1);
+        int index = 1;
+        int cows = 1;
+        int x = Ximin+LMD;
+        
+        while (true)
+        {
+            if (index!=N-1)
+            {
+                if (Stalls[index]>=x)
+                {
+                    x=Stalls[index]+LMD;
+                    index++;
+                    cows++;
+                    if (cows==C) break;
+                }
+                else
+                {
+                    index++;
+                }
+            }
+            else 
+            {
+                if (Stalls[index]>=x)
+                {
+                    cows++;
+                    if (cows==C) break;
+                }
+                
+                if (LMD==1) break;
+                else
+                {
+                    LMD--;
+                    index = 0;
+                    x=Ximin+LMD;
+                }
+            }
+        }
+        
+        LMDistance[i]=LMD;
+    }
+    
+    for (int i=0; i<t; i++)
+    {
+        cout<<LMDistance[i];
+        if (i<t-1) cout<<endl;
+    }
+    
+    return 0;
+}
